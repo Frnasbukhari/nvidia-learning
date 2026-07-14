@@ -320,27 +320,3 @@ Then train for **20 epochs**.
 Training accuracy climbs very high — but **validation accuracy lags noticeably behind**. The model is *memorizing* the training deck rather than gaining a robust, general understanding of hand shapes.
 
 This is **overfitting**, live and on purpose — the exact phenomenon Section A predicted with the two-trendlines example. ASL hands vary more than centered digits do, and our fully-connected network treats each pixel independently, so it latches onto training-set specifics. The fix (convolutional networks, data augmentation) is the subject of Parts 3 and 4.
-
-### 8. Housekeeping
-
-As always, shut down the kernel to free GPU memory before the next notebook:
-
-```python
-import IPython
-IPython.Application.instance().kernel.do_shutdown(True)
-```
-
----
-
-## 🔑 Key Takeaways
-
-1. **A neuron is a tiny regression:** `ŷ = wx + b`. Weights = slopes, bias = intercept. A network's entire knowledge lives in its weights (~668k of them even in our toy MNIST model).
-2. **Training = gradient descent:** compute the loss, find the gradient (multi-dimensional slope), step downhill, repeat. Computers can't "see" the loss bowl — they feel their way down with local slopes.
-3. **Learning rate is a balancing act:** too big overshoots the minimum; too small crawls and can strand you in a local minimum. **Optimizers** (Adam = marble with momentum rolling down a mountain) manage it for you.
-4. **Step vs epoch:** a step = one batch → gradient → update; an epoch = one full pass through the dataset.
-5. **Backpropagation** chains gradient descent through connected neurons: later errors inform earlier weights. Frameworks do the math (`.backward()`).
-6. **No activation functions → no deep learning.** Sums of linear functions are still linear. **ReLU** (zero out negatives) adds cheap non-linearity in hidden layers; **Sigmoid** squashes to (0,1) for probabilities.
-7. **Softmax lives inside CrossEntropyLoss:** during training the raw output scores become normalized probabilities summing to 100% — that's why the output layer has no activation of its own.
-8. **Cross entropy = infinite error for misplaced confidence:** near-zero loss for correct confident predictions, exploding loss for wrong confident ones (courtesy of the logarithm).
-9. **Overfitting = memorization:** great training metrics, poor validation metrics. A simpler model that generalizes beats a complex model that's perfect on data it has already seen. Watch the *gap* between the two curves.
-10. **Custom data pipeline pattern:** pandas `read_csv` → `pop` the label → normalize (`/255`) → custom `Dataset` (`__init__`, `__getitem__`, `__len__`) → `DataLoader`. Small datasets can move to the GPU once in `__init__` instead of per-batch.
