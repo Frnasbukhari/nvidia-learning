@@ -22,65 +22,9 @@ Artificial Intelligence  ⊃  Machine Learning  ⊃  Deep Learning
 
 An interesting parallel from the lecture: humans and machines both separate *learning* from *doing*. Our brains learn best in a state of **relaxed alertness** ("rest and digest"), while stress ("fight-or-flight") is for execution. Neural networks mirror this with distinct **training** and **prediction (inference)** phases — a model is either learning from data or applying what it learned, not both at once.
 
----
 
-### 2. A Brief History of AI
+### 2. Deep Learning vs  Traditional Programming on Its Head
 
-#### 2.1 Early Neural Networks (1950s)
-
-Almost as soon as computers existed, researchers built **artificial neural networks inspired by the biology of the brain**. They had modest successes (reading handwritten digits, playing backgammon), but they were held back by one huge problem: **not enough compute**. Training a network takes enormous numbers of calculations — imagine trying to run today's training loops on 1950s hardware.
-
-As a result, neural networks were outclassed by conventional programs running on the **Von Neumann architecture** (the design behind modern CPUs: a processor executing explicit instructions stored in memory).
-
-#### 2.2 Expert Systems
-
-For decades, the dominant approach to "intelligent" software was the **expert system**: a huge collection of hand-written rules meant to mimic a human subject-matter expert.
-
-**Examples:** a stock-trading bot that trades based on user-defined limits; a medical diagnosis tool driven by a programmed symptom checklist.
-
-**The fatal limitation:** every rule had to be *understood, defined, and programmed by a human*. The system could never do more than its engineers could articulate in code.
-
-> **The three-images thought experiment:** show a human photos of a cat, a car, and an ocean wave — they classify them instantly. Now try to *write the rules* a computer could follow to do the same. What makes a cat a cat, in terms of pixels? You can't write it down. Tasks that are trivial for humans can be nearly impossible to express as explicit rules. This is exactly where expert systems break down.
-
-#### 2.3 The Insight: How Do Children Learn?
-
-Children aren't given rules for recognizing cats. Instead we:
-
-1. **Expose them to lots of data** (they see many cats),
-2. **Give them the correct answer** ("yes, that's a cat" / "no, that's a dog"),
-3. Let them **pick up the important patterns on their own** through trial and error.
-
-Deep learning works the same way. This analogy is the conceptual core of the whole course: *data + feedback + iteration → learned patterns*.
-
----
-
-### 3. The Deep Learning Revolution
-
-Through the 1990s and early 2000s, powerful AI looked like a pipe dream. Two ingredients arrived together and changed everything:
-
-#### 3.1 Data 📊
-
-A network can only learn what a cat is by seeing **many** cats — and many *non-cats*. The internet era produced exactly the mountains of labeled data (images, text, clicks) that networks need.
-
-#### 3.2 Computing Power — and Why GPUs 🖥️
-
-Under the hood, **neural networks are matrix multiplication machines**. What else is built on massive matrix math? **Computer graphics** — 3D scenes are millions of tiny triangles being transformed and rotated via matrices.
-
-Because both problems share the same mathematical foundation, the hardware built for one (the **GPU**) turned out to be perfect for the other:
-
-| | CPU | GPU |
-|---|---|---|
-| Cores | ~4–16 powerful cores | Thousands of simpler cores |
-| Designed for | Sequential, complex logic | Massive parallel arithmetic |
-| DL training | Possible but painfully slow | Ideal — millions of simple calculations at once |
-
-The individual calculations in training aren't complex — there are just *astronomically many* of them, and they can run in parallel. That's a GPU's home turf.
-
----
-
-### 4. Deep Learning Flips Programming on Its Head
-
-This is the single most important conceptual shift in the course.
 
 **Traditional programming (building a classifier):**
 
@@ -107,30 +51,6 @@ You collect input/output examples (the **dataset**), and the model repeatedly *g
 
 Deep learning is *not* always the right tool. If you can write the rules, write the rules.
 
----
-
-### 5. Where Deep Learning Is Transforming the World
-
-- **Computer Vision** — teaching machines to see and interpret images the way humans do. The field predates DL, but the flood of tagged, high-quality images made DL dominant here.
-- **Natural Language Processing** — real-time translation, voice recognition, virtual assistants.
-- **Recommender Systems** — curated feeds (Facebook), music (Spotify), video (YouTube/Netflix), shopping and ads (Amazon).
-- **Reinforcement Learning** — agents that learn by acting and receiving rewards; famously AlphaGo beating the world Go champion, and bots competing with pros at StarCraft and DOTA.
-
----
-
-### 6. Tooling for This Course
-
-The three major deep learning frameworks:
-
-| Framework | Backed by |
-|---|---|
-| TensorFlow + Keras | Google |
-| **PyTorch** ← used in this course | Meta |
-| MXNet | Apache |
-
-None is a clear "winner" — this course uses **PyTorch**, and the labs run on a GPU server accessed through **JupyterLab** notebooks. It's worth gaining exposure to the others over time.
-
----
 ---
 
 ## 🧪 Section B — Lab: Image Classification with MNIST (`01_mnist.ipynb`)
@@ -393,27 +313,3 @@ prediction.argmax(dim=1, keepdim=True)   # → tensor([[5]]) — matches y_0 ✓
 ```
 
 Using a trained model on new, unseen data is called **inference** — explored properly in a later notebook.
-
-### 8. Housekeeping: Clear GPU Memory
-
-Before moving to the next notebook, shut down the kernel to release GPU memory:
-
-```python
-import IPython
-IPython.Application.instance().kernel.do_shutdown(True)
-```
-
----
-
-## 🔑 Key Takeaways
-
-1. **DL flips programming:** instead of *rules + data → answers*, you provide *data + answers* and the model learns the *rules* — like a child learning by exposure and correction.
-2. **The revolution = data + GPUs.** Networks are matrix-multiplication machines; GPUs (thousands of parallel cores) were built for exactly that math.
-3. **DL is not always the answer** — if you can articulate the rules, just program them.
-4. **Train/validation split is non-negotiable:** study with one flashcard deck, quiz with another; that's how you detect real learning vs memorization.
-5. **`ToTensor`** → float32, values rescaled to `[0, 1]`, shape `C × H × W`. Use `.to(device)` for GPU-portable code.
-6. **DataLoaders batch and shuffle** — batch size is a hyperparameter (32/64 are common); shuffle training data only.
-7. **Architecture pattern:** `Flatten → Linear + ReLU → Linear + ReLU → Linear(n_classes)`; output neurons are per-class scores, `argmax` picks the prediction.
-8. **Loss = the grade, optimizer = how to improve.** The training loop is always *forward → zero_grad → loss → backward → step*.
-9. **Validation differs by three things:** `model.eval()`, `torch.no_grad()`, and no weight updates.
-10. **An epoch** is one full pass through the data; MNIST reaches ~100% accuracy in ~5 epochs — and remains a great sanity-check benchmark for any new architecture.
